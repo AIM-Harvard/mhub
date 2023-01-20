@@ -1,5 +1,5 @@
 # Specify the base image for the environment
-FROM mhub/base:nocuda
+FROM mhubai/base:nocuda
 
 # FIXME: set this environment variable as a shortcut to avoid nnunet crashing the build
 # by pulling sklearn instead of scikit-learn
