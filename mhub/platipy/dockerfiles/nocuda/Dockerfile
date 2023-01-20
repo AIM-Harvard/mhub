@@ -13,7 +13,5 @@ RUN pip3 install --no-cache-dir \
   nnunet \
   platipy[cardiac]
 
-RUN apt update && apt install -y ffmpeg libsm6 libxext6 xvfb
-
 # Default run script
 CMD ["python3", "/app/mhub/platipy/scripts/run.py"]

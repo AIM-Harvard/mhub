@@ -14,12 +14,16 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Install basic system utilities and useful packages 
 RUN apt update && apt install -y --no-install-recommends \  
   wget \
+  unzip \
   sudo \
   git \
   python3 \
   python3-pip \
   plastimatch \
   && rm -rf /var/lib/apt/lists/*
+
+# Install common libraries that are needed by a number of models (e.g., nnUNet, Platipy, ...)
+RUN apt update && apt install -y ffmpeg libsm6 libxext6 xvfb
 
 # Create a working directory
 RUN mkdir /app
