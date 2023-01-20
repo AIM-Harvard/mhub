@@ -11,7 +11,7 @@ ENV SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
 # Install TotalSegmentator
 RUN pip3 install --no-cache-dir TotalSegmentator 
 
-# pull weights for TotalSegmentator 
+# pull weights for TotalSegmentator so that the user doesn't need to every time a container is run
 # N.B. - this pulls only the weights for the fast version of Task 256
 ENV WEIGHTS_DIR="/root/.totalsegmentator/nnunet/results/nnUNet/3d_fullres/"
 ENV WEIGHTS_URL="https://zenodo.org/record/6802052/files/Task256_TotalSegmentator_3mm_1139subj.zip"
