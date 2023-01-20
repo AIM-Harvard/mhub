@@ -44,7 +44,7 @@ RUN pip3 install --upgrade pip && pip3 install --no-cache-dir \
 
 # Clone git repositories
 RUN git config --global http.sslVerify false 
-RUN git clone https://github.com/AIM-Harvard/mhub.git /app/
+RUN git clone -b docker-dev https://github.com/AIM-Harvard/mhub.git /app/
 RUN git clone https://github.com/pieper/dicomsort.git /app/dicomsort
 
 # Make dicomsort callable
