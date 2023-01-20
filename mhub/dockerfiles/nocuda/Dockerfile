@@ -52,7 +52,7 @@ RUN git clone https://github.com/AIM-Harvard/mhub.git -b docker-dev /app/
 RUN git clone https://github.com/pieper/dicomsort.git /app/dicomsort
 
 # Make dicomsort callable
-RUN printf "python3 /app/dicomsort/dicomsort.py \"$@\"\n" > /usr/bin/dicomsort
+RUN printf "python3 /app/dicomsort/dicomsort.py \"\$@\"\n" > /usr/bin/dicomsort
 RUN sudo chmod +x /usr/bin/dicomsort
 
 # Install DCMQI
