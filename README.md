@@ -50,7 +50,6 @@ https://docs.docker.com/desktop/install/ubuntu/
 
 > Docker Desktop includes the Docker daemon (dockerd), the Docker client (docker), Docker Compose, Docker Content Trust, Kubernetes, and Credential Helper.
 
-
 ## Install on Windows
 
 To install docker on Windows, please follow Docker's official documentation at:
@@ -65,7 +64,36 @@ Please, note that:
 
 ## Running MHub Containers from CLI
 
-<Some examples of how to build and pull MHub containers and run them>
+### Pulling Containers from Dockerhub
+
+All the MHub images are multi-platform whenever possible, and [made available through Dockerhub](https://hub.docker.com/repositories/mhubai). Since pulling images from Dockerhub is considerably faster than building images on your system, we advise you do so if you don't have platform-related issues.
+
+Assuming you want to try the `totalsegmentator` container without CUDA support (`mhubai/totalsegmentator:cuda12.0`), and the DICOM Series you want to process is stored at `$PATH_TO_DICOM_SERIES_FOLDER`, and you want to store the output of the model at `$PATH_TO_OUTPUT_FOLDER`, and:
+
+
+```
+time docker run --volume /home/dennis/Desktop/sample_data/input_dcm:/app/data/input_data --volume /home/dennis/Desktop/sample_data/output_data/totalsegmentator:/app/data/output_data --gpus all mhubai/totalsegmentator:cuda12.0
+```
+
+### Building Containers Locally
+
+If for some reason (e.g., platform compatibility) you would like to build the MHub containers locally, you can do so in a couple of very simple steps.
+
+First, `cd` in the directory storing the dockerfile of the container you're interested to. The MHub containers are provided both without CUDA support (`nocuda`) and with CUDA support (`cudaXX.X`, .e.g, `cuda12.0`) whenever possible:
+
+```
+cd git/mhub/mhub/totalsegmentator/dockerfiles/nocuda
+```
+
+Once you find yourself in the correct directory, you can build the container by simply running:
+
+```
+docker build . --no-cache --tag $CONTAINER_NAME
+```
+
+If you want to [specify the platform to build for](https://docs.docker.com/build/building/multi-platform/), you're free to do so using the `--platform` argument.
+
+You will now be able to run the container as explained in the "Pulling Containers from Dockerhub" section above.
 
 ## Integration with 3D Slicer
 
@@ -83,4 +111,37 @@ We are in the process of developing tools to allow researchers and developers to
 
 ## Docker Support of Machines with AppleSilicon (e.g., M1 Processors)
 
-<Document the M1 issue here>
+The users building Docker containers on Apple Silicon devices still face some issues, as documented in many blogposts all over the web.
+
+For instance, some packages might not have an available candidate for installation if you try to build a Linux-based Docker image on an M1 macbook:
+
+```
+# build the mhubai base image without CUDA support
+cd git/mhub/mhub/dockerfiles/nocuda
+
+[+] Building 3.9s (7/18)                                                                                
+ => [internal] load build definition from Dockerfile                                               0.0s
+ => => transferring dockerfile: 37B                                                                0.0s
+ => [internal] load .dockerignore                                                                  0.0s
+ => => transferring context: 2B                                                                    0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:20.04                                    0.7s
+ => CACHED [ 1/15] FROM docker.io/library/ubuntu:20.04@sha256:0e0402cd13f68137edb0266e1d2c682f217  0.0s
+ => [ 2/15] RUN rm -f /etc/apt/sources.list.d/*.list                                               0.2s
+ => [ 3/15] RUN ln -snf /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime && echo Europe/Amster  0.1s
+ => ERROR [ 4/15] RUN apt update && apt install -y --no-install-recommends   wget   unzip   sudo   2.8s
+
+...
+
+#7 2.274 Reading package lists...
+#7 2.680 Building dependency tree...
+#7 2.767 Reading state information...
+#7 2.777 Package plastimatch is not available, but is referred to by another package.
+#7 2.777 This may mean that the package is missing, has been obsoleted, or
+#7 2.777 is only available from another source
+#7 2.777 
+#7 2.785 E: Package 'plastimatch' has no installation candidate
+```
+
+If you want to know more, there are some [very relevant posts about this exact issue](https://groups.google.com/g/plastimatch/c/IGpuVP5ZLm8?pli=1).
+
+The only way this problem can be solved is by running the `docker build` command specifying the platform, with the `--platform` flag. In our case, passing the argument `--platform linux/amd64` will result in a successful build, with the caveat that all the libraries installed in the Docker container will of course not be optimized for the Apple Silicon processor. This practically means that running computationally intensive tasks (e.g., the `mhubai/totalsegmentator:nocuda` image) will take approximately 10 times longer than what it would take if AppleSilicon-optimized libraries were parsed.
