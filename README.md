@@ -12,7 +12,7 @@ MHub is still being developed, so bear with us if some functionalities are still
   -[Linux](#install-on-linux)
 - [Usage](#usage)
   - [Command-line Interface (CLI)](#running-mhub-containers-from-cli)
-  - [3DSlicer](#integration-with-3dslicer)
+  - [3D Slicer](#integration-with-3dslicer)
 - [Contributing to MHub](#contributing-to-mhub)
 - [Known Issues](#known-issues)
 
@@ -67,9 +67,9 @@ Please, note that:
 
 <Some examples of how to build and pull MHub containers and run them>
 
-## Integration with 3DSlicer
+## Integration with 3D Slicer
 
-Link and short explanation of the 3DSlicer plug-in:
+Link and short explanation of the 3D Slicer plug-in:
 
 https://github.com/AIM-Harvard/SlicerMHubRunner
 
