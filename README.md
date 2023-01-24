@@ -2,7 +2,6 @@
 
 Making machine learning models for medical imaging available through a standardized I/O framework.
 
-
 MHub is still being developed, so bear with us if some functionalities are still not implemented or to be improved. MHub is developed by researchers for researchers, and thus we welcome and appreciate any feedback that can help improve the platform (so feel free to [open an Issue on GitHub](https://github.com/AIM-Harvard/mhub/issues/new) with your suggestions).
 
 # Table of Contents
@@ -12,7 +11,7 @@ MHub is still being developed, so bear with us if some functionalities are still
   -[Linux](#install-on-linux)
 - [Usage](#usage)
   - [Command-line Interface (CLI)](#running-mhub-containers-from-cli)
-  - [3D Slicer](#integration-with-3dslicer)
+  - [3D Slicer](#integration-with-3d-slicer)
 - [Contributing to MHub](#contributing-to-mhub)
 - [Known Issues](#known-issues)
 
@@ -70,10 +69,84 @@ All the MHub images are multi-platform whenever possible, and [made available th
 
 Assuming you want to try the `totalsegmentator` container without CUDA support (`mhubai/totalsegmentator:cuda12.0`), and the DICOM Series you want to process is stored at `$PATH_TO_DICOM_SERIES_FOLDER`, and you want to store the output of the model at `$PATH_TO_OUTPUT_FOLDER`, and:
 
+```
+docker run \
+--volume $PATH_TO_DICOM_SERIES_FOLDER:/app/data/input_data \
+--volume $PATH_TO_OUTPUT_FOLDER:/app/data/output_data
+--gpus all \
+mhubai/totalsegmentator:cuda12.0
+```
+
 
 ```
-time docker run --volume /home/dennis/Desktop/sample_data/input_dcm:/app/data/input_data --volume /home/dennis/Desktop/sample_data/output_data/totalsegmentator:/app/data/output_data --gpus all mhubai/totalsegmentator:cuda12.0
+time docker run \
+  --volume /home/dennis/Desktop/sample_data/input_dcm:/app/data/input_data \
+  --volume /home/dennis/Desktop/sample_data/output_data/totalsegmentator:/app/data/output_data \
+  --gpus all mhubai/totalsegmentator:cuda12.0
+
+> Unable to find image 'mhubai/totalsegmentator:nocuda' locally
+> nocuda: Pulling from mhubai/totalsegmentator
+> 846c0b181fff: Pull complete 
+c9c6540f8dd7: Pull complete 
+...
+> cf5d6d5df729: Pull complete 
+> Digest: sha256:4ce05edbc1b79ce805e7d718a3888f944439b5ed317cff497ceff9b72317532e
+> Status: Downloaded newer image for mhubai/totalsegmentator:nocuda
+> 100%|██████████| 139/139 [00:00<00:00, 823.41it/s]Files sorted
+
+> If you use this tool please cite: https://doi.org/10.48550/arXiv.2208.05868
+
+> Using 'fast' option: resampling to lower resolution (3mm)
+> Resampling...
+>   Resampled in 1.79s
+> Predicting...
+>   Predicted in 3.89s
+> Resampling...
+> Saving segmentations...
+> 100%|██████████| 104/104 [00:05<00:00, 20.72it/s]
+>   Saved in 6.07s
+
+> --------------------------
+> Start UnsortedInstanceImporter
+> Done in 2.69413e-05 seconds.
+
+> --------------------------
+> Start DataSorter
+> sorting schema: /app/data/sorted/%SeriesInstanceUID/dicom/%SOPInstanceUID.dcm
+> ['dicomsort', '-k', '-u', '/app/data/input_data', '/app/data/sorted/%SeriesInstanceUID/dicom/%SOPInstanceUID.dcm']
+> Done in 0.394417 seconds.
+
+> --------------------------
+> Start NiftiConverter
+
+> Running 'plastimatch convert' with the specified arguments:
+>   --input /app/data/sorted/1.2.826.0.1.3680043.8.498.99748665631895691356693177610672446391/dicom
+>   --output-img /app/data/sorted/1.2.826.0.1.3680043.8.498.99748665631895691356693177610672446391/image.nii.gz
+> ... Done.
+> Done in 10.9903 seconds.
+
+> --------------------------
+> Start TotalSegmentatorRunner
+> Running TotalSegmentator in fast mode ('--fast', 3mm): 
+> >> run ts:  ['TotalSegmentator', '-i', '/app/data/sorted/1.2.826.0.1.3680043.8.498.99748665631895691356693177610672446391/image.nii.gz', '-o', > '/app/tmp/b5f0e986-4370-4560-a6fe-63e1f4a0ccc5', '--fast']
+> Done in 15.8204 seconds.
+
+> --------------------------
+> Start DsegConverter
+...
+> Done in 18.1758 seconds.
+
+> --------------------------
+> Start DataOrganizer
+> organizing instance <I:/app/data/sorted/1.2.826.0.1.3680043.8.498.99748665631895691356693177610672446391>
+> created directory /app/data/output_data/1.2.826.0.1.3680043.8.498.99748665631895691356693177610672446391
+> Done in 0.0676122 seconds.
+
+> real	2m58,528s
+> user	0m0,110s
+> sys	0m0,053s
 ```
+
 
 ### Building Containers Locally
 
