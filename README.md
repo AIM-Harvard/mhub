@@ -7,8 +7,8 @@ MHub is still being developed, so bear with us if some functionalities are still
 # Table of Contents
 - [About MHub](#about-mhub-)
 - [Installation](#installation)
-  -[Windows](#install-on-windows)
-  -[Linux](#install-on-linux)
+  - [Windows](#install-on-windows)
+  - [Linux](#install-on-linux)
 - [Usage](#usage)
   - [Command-line Interface (CLI)](#running-mhub-containers-from-cli)
   - [3D Slicer](#integration-with-3d-slicer)
