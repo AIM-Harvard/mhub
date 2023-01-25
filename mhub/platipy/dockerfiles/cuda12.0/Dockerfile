@@ -14,9 +14,9 @@ RUN pip3 install --no-cache-dir \
   platipy[cardiac]
 
 # pull weights for platipy's nnU-Net so that the user doesn't need to every time a container is run
-ENV WEIGHTS_DIR="/root/.platipy/nnUNet_models/nnUNet/3d_lowres/"
+ENV WEIGHTS_DIR="/root/.platipy/nnUNet_models/nnUNet/"
 ENV WEIGHTS_URL="https://zenodo.org/record/6585664/files/Task400_OPEN_HEART_3d_lowres.zip"
-ENV WEIGHTS_FN="Task400_OPEN_HEART_1FOLD"
+ENV WEIGHTS_FN="Task400_OPEN_HEART_3d_lowres.zip"
 
 RUN wget --directory-prefix ${WEIGHTS_DIR} ${WEIGHTS_URL}
 RUN unzip ${WEIGHTS_DIR}${WEIGHTS_FN} -d ${WEIGHTS_DIR}
