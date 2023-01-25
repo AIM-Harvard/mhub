@@ -78,7 +78,7 @@ class DsegConverter(DataConverter):
         if self.c["skip_empty_slices"] == True:
             bash_command += ["--skip"]
 
-        print(" ".join(bash_command))
+        self.v(">> run: ", " ".join(bash_command))
 
         # execute command
         bash_return = subprocess.run(bash_command, check = True, text = True)

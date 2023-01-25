@@ -37,7 +37,7 @@ class TotalSegmentatorRunner(ModelRunner):
             self.v("Running TotalSegmentator in default mode (1.5mm)")
 
         # TODO: remove 
-        print(">> run ts: ", bash_command)
+        self.v(">> run ts: ", " ".join(bash_command))
 
         # run the model
         bash_return = subprocess.run(bash_command, check=True, text=True)
@@ -47,7 +47,7 @@ class TotalSegmentatorRunner(ModelRunner):
 
             # ignore non nifti files
             if out_file[-7:] != ".nii.gz":
-                print(f"IGNORE OUTPUT FILE {out_file}")
+                self.v(f"IGNORE OUTPUT FILE {out_file}")
                 continue
 
             # meta

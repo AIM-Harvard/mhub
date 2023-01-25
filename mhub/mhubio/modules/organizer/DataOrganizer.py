@@ -50,7 +50,7 @@ class DataOrganizer(Module):
                         _target = _target.replace('[random]', str(uuid.uuid4()))
                     elif var == "path":
                         _target = _target.replace("[path]", data.path)
-                elif scope == "i:":
+                elif scope == "i:" and data.instance is not None:
                     if not var in data.instance.attr:
                         print(f"WARNING: attribute '{var}' missing in instance {data.instance}. Case ignored.")
                         return None
@@ -67,14 +67,14 @@ class DataOrganizer(Module):
 
     def organize(self, instance: Instance) -> None:
         
-        print("organizing instance", str(instance))
+        self.v("organizing instance", str(instance))
         
         for (type, target) in self.target.items():
             
             if not instance.hasType(type):
-                print(f"type {str(type)} not in instance. all types are:")
+                self.v(f"type {str(type)} not in instance. all types are:")
                 for d in instance.data:
-                    print("> ", str(d.type), d.abspath)
+                    self.v("> ", str(d.type), d.abspath)
                 continue
 
             # get input file path
