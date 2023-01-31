@@ -37,6 +37,6 @@ NrrdImporter(config).execute()
 ThresholdingRunner(config).execute()
 
 # organize data into output folder
-organizer = DataOrganizer(config)
+organizer = DataOrganizer(config, set_file_permissions=sys.platform.startswith('linux'))
 organizer.setTarget(DataType(FileType.NRRD, SEG), "/app/data/output_data/output.nrrd")
 organizer.execute()

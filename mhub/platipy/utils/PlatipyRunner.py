@@ -35,7 +35,7 @@ class PlatipyRunner(ModelRunner):
             self.v("Running the hybrid cardiac segmentation with default configuration.")
 
         # TODO: remove 
-        print(">> run pp: ", bash_command)
+        self.v(">> run pp: ", " ".join(bash_command))
 
         # run the model
         bash_return = subprocess.run(bash_command, check=True, text=True)
@@ -45,7 +45,7 @@ class PlatipyRunner(ModelRunner):
 
             # ignore non nifti files
             if out_file[-7:] != ".nii.gz":
-                print(f"IGNORE OUTPUT FILE {out_file}")
+                self.v(f"IGNORE OUTPUT FILE {out_file}")
                 continue
 
             # meta

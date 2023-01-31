@@ -60,7 +60,8 @@ def generateJsonMeta(yaml_meta, file_list, verbose=True):
     json_meta['segmentAttributes'] = []
 
     # build segmentAttributes
-    print(yaml_meta['segments'])
+    if verbose: 
+        print(yaml_meta['segments'])
 
     # file to seg-id mapper 
     file2segid = {seg_file: segid for segid, seg_file in yaml_meta['segments'].items()}
