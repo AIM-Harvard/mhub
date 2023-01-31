@@ -197,6 +197,12 @@ class Instance:
         fitalics = '\x1B[3m'
         fnormal ='\x1B[0m'
 
+        # get maximal terminal length or set a default length
+        try:
+            maxTerminalLength = os.get_terminal_size().columns
+        except OSError as e:
+            maxTerminalLength = 100
+
         # print fromatted output
         print(f". {fitalics}{label}{fnormal}")
         for ftype in cnt_ftype:
@@ -215,7 +221,7 @@ class Instance:
                         
                         while n1lst:
                             cc = 12
-                            while n1lst and cc + len(str(n1lst[0])) + 2 < os.get_terminal_size().columns:
+                            while n1lst and cc + len(str(n1lst[0])) + 2 < maxTerminalLength:
                                 print(str(n1lst[0]) + ", ", end="")
                                 cc  += len(str(n1lst[0])) + 2
                                 n1lst = n1lst[1:]
@@ -287,12 +293,14 @@ class InstanceData:
         self.instance: Optional[Instance] = None
         self.path: str = path
         self.type: DataType = type
+        self.base: Optional[str] = None
 
     @property
     def abspath(self) -> str:
-        if hasattr(self, 'base'):
+        if self.base is not None:
             return os.path.join(self.base, self.path)
         else:
+            assert self.instance is not None
             return os.path.join(self.instance.abspath, self.path)
 
     def __str__(self) -> str:

@@ -51,7 +51,8 @@ class DataSorter(DataImporter):
             schema
         ]
 
-        print(bash_command)
+        # TODO: remove
+        self.v(">> run: ", " ".join(bash_command))
 
         _ = subprocess.run(bash_command, check=True, text=True)
 

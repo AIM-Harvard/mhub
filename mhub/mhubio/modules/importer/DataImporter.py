@@ -22,7 +22,7 @@ class IDEF:
         created and all data is located in the input folder (which should then be set as the data importer's basePath).
     """
     def __init__(self, ref: Optional[str], path: str, ftype: FileType, meta: Meta) -> None:
-        self.ref = ref #if ref and type(ref) == str else str(uuid.uuid4())
+        self.ref = ref if ref is not None else "" #if ref and type(ref) == str else str(uuid.uuid4())
         self.path = path
         self.ftype = ftype
         self.meta = meta
@@ -55,6 +55,7 @@ class DataImporter(Module):
 
     def addDicomCT(self, path: str, ref: Optional[str] = None) -> None:
         _path = self._resolvePath(path, ref)
+        self.v("adding ct in dicom format with resolved path: ", _path)
         assert os.path.isdir(_path), f"Expect existing dicom directory, '{_path}' was given instead."
         assert [f for f in os.listdir(_path) if f[-4:] == '.dcm'], f"Expect at least one file ending with .dcm in {_path}."
         self._import_paths.append(IDEF(
@@ -66,6 +67,7 @@ class DataImporter(Module):
 
     def addNiftiCT(self, path: str, ref: Optional[str] = None) -> None:
         _path  = self._resolvePath(path, ref)
+        self.v("adding ct in nifti format with resolved path: ", _path)
         assert os.path.isfile(_path) and (_path[-4:] == '.nii' or _path[-7:] == '.nii.gz'), f"Expect existing nifti file, '{_path}' was given instead."
         self._import_paths.append(IDEF(
             ref = ref,
@@ -76,7 +78,7 @@ class DataImporter(Module):
 
     def addNrrdCT(self, path: str, ref: Optional[str] = None) -> None:
         _path  = self._resolvePath(path, ref)
-        print("--> resolved path", _path)
+        self.v("adding ct in nrrd format with resolved path: ", _path)
         assert os.path.isfile(_path) and (_path[-5:] == '.nrrd'), f"Expect existing nrrd file, '{_path}' was given instead."
         self._import_paths.append(IDEF(
             ref = ref,

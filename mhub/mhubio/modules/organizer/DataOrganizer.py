@@ -16,9 +16,10 @@ from mhub.mhubio.Config import Config, Module, Instance, InstanceData, DataType,
 class DataOrganizer(Module):
     target: Dict[DataType, str] = {}
 
-    def __init__(self, config: Config) -> None:
+    def __init__(self, config: Config, dry_run: bool = False, set_file_permissions: bool = False) -> None:
         super().__init__(config)
-        self.dry = False
+        self.dry = dry_run
+        self.set_file_permissions = set_file_permissions
 
     def setTarget(self, type: DataType, dir: str) -> None: # TODO: define copy / move action
         """
@@ -50,7 +51,7 @@ class DataOrganizer(Module):
                         _target = _target.replace('[random]', str(uuid.uuid4()))
                     elif var == "path":
                         _target = _target.replace("[path]", data.path)
-                elif scope == "i:":
+                elif scope == "i:" and data.instance is not None:
                     if not var in data.instance.attr:
                         print(f"WARNING: attribute '{var}' missing in instance {data.instance}. Case ignored.")
                         return None
@@ -67,14 +68,14 @@ class DataOrganizer(Module):
 
     def organize(self, instance: Instance) -> None:
         
-        print("organizing instance", str(instance))
+        self.v("organizing instance", str(instance))
         
         for (type, target) in self.target.items():
             
             if not instance.hasType(type):
-                print(f"type {str(type)} not in instance. all types are:")
+                self.v(f"type {str(type)} not in instance. all types are:")
                 for d in instance.data:
-                    print("> ", str(d.type), d.abspath)
+                    self.v("> ", str(d.type), d.abspath)
                 continue
 
             # get input file path
@@ -89,6 +90,7 @@ class DataOrganizer(Module):
                 inp_data_target_dir = os.path.dirname(inp_data_target)
                 if not self.dry and not os.path.isdir(inp_data_target_dir):
                     os.makedirs(inp_data_target_dir)
+                    if self.set_file_permissions: os.chmod(inp_data_target_dir, 0o777)
                     self.v(f"created directory {inp_data_target_dir}")
 
                 # add to instance
@@ -100,6 +102,7 @@ class DataOrganizer(Module):
                 # copy
                 if not self.dry:
                     shutil.copyfile(inp_data.abspath, out_data.abspath)
+                    if self.set_file_permissions: os.chmod(out_data.abspath, 0o777)
                 else:
                     print(f"dry copy {inp_data.abspath} to {out_data.abspath}")
 
