@@ -293,12 +293,14 @@ class InstanceData:
         self.instance: Optional[Instance] = None
         self.path: str = path
         self.type: DataType = type
+        self.base: Optional[str] = None
 
     @property
     def abspath(self) -> str:
-        if hasattr(self, 'base'):
+        if self.base is not None:
             return os.path.join(self.base, self.path)
         else:
+            assert self.instance is not None
             return os.path.join(self.instance.abspath, self.path)
 
     def __str__(self) -> str:
