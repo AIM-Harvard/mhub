@@ -4,11 +4,16 @@ Making machine learning models for medical imaging available through a standardi
 
 MHub is still being developed, so bear with us if some functionalities are still not implemented or to be improved. MHub is developed by researchers for researchers, and thus we welcome and appreciate any feedback that can help improve the platform (so feel free to [open an Issue on GitHub](https://github.com/AIM-Harvard/mhub/issues/new) with your suggestions).
 
+To learn more about our vision, you can check the presentation we gave at the [38th NA-MIC Project Week](https://projectweek.na-mic.org/PW38_2023_GranCanaria/) at [this link](https://docs.google.com/presentation/d/1UoI74RaTDinsKoTQEA46bAs62bgOmeikKwiFi0GGq0A/edit?usp=sharing).
+
+If you want to give a quick try to MHub or to our 3D Slicer plug-in, you can do so in **less than five minutes** by reading our guide to the [MHub CLI quickstart](#running-mhub-containers-from-cli) and to the [MHub 3D Slicer plugin quick setup](#integration-with-3d-slicer). 
+
+
 # Table of Contents
 - [About MHub](#about-mhub-)
 - [Installation](#installation)
-  - [Windows](#install-on-windows)
-  - [Linux](#install-on-linux)
+  - [Windows](#install-docker-on-windows)
+  - [Linux](#install-docker-on-linux)
 - [Usage](#usage)
   - [Command-line Interface (CLI)](#running-mhub-containers-from-cli)
   - [3D Slicer](#integration-with-3d-slicer)
@@ -33,7 +38,7 @@ MHub is based on Docker, which is a platform and technology that allows develope
 
 Therefore, as long as the node has Docker installed, MHub models can run anywhere - on a laptop, on a research workstation in a hospital, on a research server or in the cloud.
 
-## Install on Linux 
+## Install Docker on Linux 
 
 To install docker on Linux, you can follow Docker's official documentation at:
 
@@ -49,7 +54,7 @@ https://docs.docker.com/desktop/install/ubuntu/
 
 > Docker Desktop includes the Docker daemon (dockerd), the Docker client (docker), Docker Compose, Docker Content Trust, Kubernetes, and Credential Helper.
 
-## Install on Windows
+## Install Docker on Windows
 
 To install docker on Windows, please follow Docker's official documentation at:
 
@@ -67,16 +72,17 @@ Please, note that:
 
 All the MHub images are multi-platform whenever possible, and [made available through Dockerhub](https://hub.docker.com/repositories/mhubai). Since pulling images from Dockerhub is considerably faster than building images on your system, we advise you do so if you don't have platform-related issues.
 
-Assuming you want to try the `totalsegmentator` container without CUDA support (`mhubai/totalsegmentator:cuda12.0`), and the DICOM Series you want to process is stored at `$PATH_TO_DICOM_SERIES_FOLDER`, and you want to store the output of the model at `$PATH_TO_OUTPUT_FOLDER`, and:
+Assuming you want to try the `totalsegmentator` container with CUDA (v12.0) support (`mhubai/totalsegmentator:cuda12.0`), and the DICOM Series you want to process is stored at `$ABS_PATH_TO_DICOM_SERIES_FOLDER` (absolute path!), you want to store the output of the model at `$ABS_PATH_TO_OUTPUT_FOLDER` (absolute path!), and you want to use whatever GPU is available on your system (`--gpu all`), you can run:
 
 ```
 docker run \
---volume $PATH_TO_DICOM_SERIES_FOLDER:/app/data/input_data \
---volume $PATH_TO_OUTPUT_FOLDER:/app/data/output_data
+--volume $ABS_PATH_TO_DICOM_SERIES_FOLDER:/app/data/input_data \
+--volume $ABS_PATH_TO_OUTPUT_FOLDER:/app/data/output_data
 --gpus all \
 mhubai/totalsegmentator:cuda12.0
 ```
 
+Here follows an example how to populate the variables above. In this case, the entire pipeline (DICOM to DICOM SEG) - including the pull of the CUDA-accelrated docker container - took less than three minutes to run (on a Desktop PC equipped with a TITAN RTX, an AMD Ryzen 7 3800X, and 64GB of RAM):
 
 ```
 time docker run \
@@ -147,10 +153,11 @@ c9c6540f8dd7: Pull complete
 > sys	0m0,053s
 ```
 
+Since the `mhubai/totalsegmentator:cuda12.0` container will now be stored in your system, new runs will likely take around 30 seconds.
 
 ### Building Containers Locally
 
-If for some reason (e.g., platform compatibility) you would like to build the MHub containers locally, you can do so in a couple of very simple steps.
+If for some specific reason (e.g., platform compatibility) you would like to build the MHub containers locally, you can do so in a couple of very simple steps.
 
 First, `cd` in the directory storing the dockerfile of the container you're interested to. The MHub containers are provided both without CUDA support (`nocuda`) and with CUDA support (`cudaXX.X`, .e.g, `cuda12.0`) whenever possible:
 
@@ -170,9 +177,10 @@ You will now be able to run the container as explained in the "Pulling Container
 
 ## Integration with 3D Slicer
 
-Link and short explanation of the 3D Slicer plug-in:
+You can find instructions regarding how to install our 3D Slicer plug-in in less than five minutes at the following repository:
 
 https://github.com/AIM-Harvard/SlicerMHubRunner
+
 
 # Contributing to MHub
 
