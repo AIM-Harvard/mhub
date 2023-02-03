@@ -14,6 +14,16 @@ import os, time, uuid, yaml
 from enum import Enum
 from typing import List, Dict, Union, Optional, Tuple, Type, Any
 
+def dict_merge(source: dict, destination: dict) -> dict:
+    for k, v in source.items():
+        if isinstance(v, dict):
+            n = destination.setdefault(k, {})
+            dict_merge(v, n)
+        else:
+            destination[k] = v
+    return destination
+
+
 class FileType(Enum):
     NONE = None
     NRRD = "nrrd"
@@ -374,7 +384,7 @@ class Config:
     # TODO: config will load it's dynamic, configurable attributes from yaml or json file. 
     # The config should be structured such that there is a shared config accessiblae to all modules and a (optional) config for each Module class. Class inheritance is followed naturally.
 
-    def __init__(self, config_file: Optional[str] = None) -> None:
+    def __init__(self, config_file: Optional[str] = None, config: Optional[dict] = None) -> None:
         self.verbose = True
         self.debug = False
 
@@ -394,6 +404,14 @@ class Config:
                 },
                 'modules': {}
             }
+
+        # override / extend file based config with explicit configurations (if any)
+        if config is not None:
+            print("Updating config with explicit settings.")
+            print(self._config)
+            print(config)
+            self._config = dict_merge(config, self._config.copy())
+            print(self._config)
 
         # Create a data handler with no instances.
         # NOTE: The first module should always be an importer module importing instances and instance data.
