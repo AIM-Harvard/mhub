@@ -9,3 +9,6 @@ modules:
   NNUnetRunner:
     task: 'Task003_Liver'
     model: '3d_lowres'
+  DsegConverter:
+    dicomseg_json_path: /app/mhub/nnunet_liver/config/meta.json
+    skip_empty_slices: True

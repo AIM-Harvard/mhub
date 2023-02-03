@@ -17,6 +17,7 @@ from mhub.mhubio.modules.importer.UnsortedDicomImporter import UnsortedInstanceI
 from mhub.mhubio.modules.importer.DataSorter import DataSorter
 from mhub.mhubio.modules.convert.NiftiConverter import NiftiConverter
 from mhub.mhubio.modules.runner.NNUnetRunner import NNUnetRunner
+from mhub.mhubio.modules.convert.DsegConverter import DsegConverter
 from mhub.mhubio.modules.organizer.DataOrganizer import DataOrganizer
 
 # clean-up
@@ -27,7 +28,7 @@ shutil.rmtree("/app/tmp", ignore_errors=True)
 shutil.rmtree("/app/data/output_data", ignore_errors=True)
 
 # config
-config = Config('/app/mhub/platipy/config/config.yml')
+config = Config('/app/mhub/nnunet_liver/config/config.yml')
 config.verbose = True  # TODO: define levels of verbosity and integrate consistently. 
 config.debug = True
 
@@ -48,6 +49,9 @@ runner.input_type = DataType(FileType.NIFTI, CT)
 runner.nnunet_model = '3d_lowres'
 runner.nnunet_task = 'Task003_Liver'
 runner.execute()
+
+# convert (seg:nifti -> seg:dcm)
+DsegConverter(config).execute()
 
 # organize data into output folder
 organizer = DataOrganizer(config, set_file_permissions=sys.platform.startswith('linux'))
