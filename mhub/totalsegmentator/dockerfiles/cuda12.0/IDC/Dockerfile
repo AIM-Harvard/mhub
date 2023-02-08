@@ -1,5 +1,5 @@
 # Specify the base image for the environment
-FROM mhubai/totalsegmentator:nocuda
+FROM mhubai/totalsegmentator:cuda12.0
 
 # Install some basic system utilities
 RUN apt update && apt install -y --no-install-recommends \
