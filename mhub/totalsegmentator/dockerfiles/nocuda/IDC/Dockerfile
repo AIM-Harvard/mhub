@@ -3,10 +3,11 @@ FROM mhubai/totalsegmentator:nocuda
 
 # Install some basic system utilities
 RUN apt update && apt install -y --no-install-recommends \
-  curl\
   apt-transport-https\
   ca-certificates\
+  curl\
   gnupg\
+  subversion\
   zip\
 && rm -rf /var/lib/apt/lists/*
 
@@ -21,11 +22,13 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg]\
 
 # Install jupyter utilities (specify version if necessary)
 RUN pip3 install --no-cache-dir \
-  jupyter \
+  db_dtypes\
+  google-cloud-bigquery\
+  google-cloud-storage\
   ipykernel \
   ipython \
   ipywidgets\
+  jupyter\
   papermill\
-  google-cloud-bigquery\
-  google-cloud-storage\
-  db_dtypes
+  thedicomsort\
+  yamlmagic
