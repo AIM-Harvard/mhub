@@ -30,12 +30,10 @@ shutil.rmtree("/app/data/output_data", ignore_errors=True)
 # config
 config = Config('/app/mhub/nnunet_liver/config/config.yml')
 config.verbose = True  # TODO: define levels of verbosity and integrate consistently. 
-config.debug = True
+config.debug = False
 
 # import
 UnsortedInstanceImporter(config).execute()
-
-# $(pwd)/mhub:/app/mhub
 
 # sort
 DataSorter(config).execute()
