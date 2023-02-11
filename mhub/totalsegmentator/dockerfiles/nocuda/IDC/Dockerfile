@@ -3,11 +3,10 @@ FROM mhubai/totalsegmentator:nocuda
 
 # Install some basic system utilities
 RUN apt update && apt install -y --no-install-recommends \
+  curl\
   apt-transport-https\
   ca-certificates\
-  curl\
   gnupg\
-  subversion\
   zip\
 && rm -rf /var/lib/apt/lists/*
 
@@ -22,13 +21,23 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg]\
 
 # Install jupyter utilities (specify version if necessary)
 RUN pip3 install --no-cache-dir \
-  db_dtypes\
-  google-cloud-bigquery\
-  google-cloud-storage\
+  jupyter \
   ipykernel \
   ipython \
   ipywidgets\
-  jupyter\
   papermill\
-  thedicomsort\
-  yamlmagic
+  google-cloud-bigquery\
+  google-cloud-storage\
+  db_dtypes
+
+
+COPY weights_download.sh /root/weights_download.sh
+RUN chmod +x /root/weights_download.sh
+RUN /root/weights_download.sh
+
+ENV S5CMD_URL="https://github.com/peak/s5cmd/releases/download/v2.0.0/s5cmd_2.0.0_Linux-64bit.tar.gz"
+ENV S5CMD_FN="s5cmd_2.0.0_Linux-64bit.tar.gz"
+
+RUN wget ${S5CMD_URL}
+RUN tar -xvzf ${S5CMD_FN}
+RUN rm ${S5CMD_FN}
