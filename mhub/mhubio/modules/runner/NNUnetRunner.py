@@ -40,7 +40,7 @@ class NNUnetRunner(ModelRunner):
         nnunet_model_config_key = 'model'
         if self._nnunet_model is not None and self._nnunet_model in self._nnunet_model_available_options:
             return self._nnunet_model
-        elif nnunet_model_config_key in self.c and self.c in self._nnunet_model_available_options:
+        elif nnunet_model_config_key in self.c and self.c[nnunet_model_config_key] in self._nnunet_model_available_options:
             return self.c[nnunet_model_config_key]
         else:
             raise ValueError("No model set for nnunet runner.")
