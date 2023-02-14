@@ -49,5 +49,5 @@ DsegConverter(config).execute()
 # organize data into output folder
 organizer = DataOrganizer(config, set_file_permissions=sys.platform.startswith('linux'))
 organizer.setTarget(DataType(FileType.NIFTI, CT), "/app/data/output_data/[i:SeriesID]/[path]")
-organizer.setTarget(DataType(FileType.DICOMSEG, SEG), "/app/data/output_data/[i:SeriesID]/lungmask.seg.dcm")
+organizer.setTarget(DataType(FileType.DICOMSEG, SEG), "/app/data/output_data/[i:SeriesID]/LungMask.seg.dcm")
 organizer.execute()
